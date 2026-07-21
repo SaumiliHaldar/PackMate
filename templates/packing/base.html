@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}PackMate{% endblock %}</title>
+  <meta name="description" content="PackMate — AI-assisted box selection for your warehouse orders." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'packing/style.css' %}" />
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <button id="sidebar-toggle" class="sidebar-toggle-btn">
+        <i class="fa-solid fa-chevron-left" id="sidebar-toggle-icon"></i>
+      </button>
+
+      <div class="sidebar-header">
+        <a href="/" class="logo">
+          <i class="fa-solid fa-cube"></i>
+          <span class="sidebar-text">PackMate</span>
+        </a>
+      </div>
+      <nav class="nav-menu">
+        <a href="/" class="nav-item active" data-tooltip="Dashboard"><i class="fa-solid fa-border-all"></i> <span class="sidebar-text">Dashboard</span></a>
+        <a href="/admin/packing/product/" class="nav-item" target="_blank" data-tooltip="Products"><i class="fa-solid fa-box-open"></i> <span class="sidebar-text">Products</span></a>
+        <a href="/admin/packing/box/" class="nav-item" target="_blank" data-tooltip="Boxes"><i class="fa-solid fa-boxes-stacked"></i> <span class="sidebar-text">Boxes</span></a>
+        <a href="/admin/packing/order/" class="nav-item" target="_blank" data-tooltip="Orders"><i class="fa-solid fa-cart-shopping"></i> <span class="sidebar-text">Orders</span></a>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="/admin/" target="_blank" class="user-profile" data-tooltip="{{ user.first_name }} {{ user.last_name }}" style="text-decoration: none;">
+          <div class="avatar">{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}</div>
+          <div class="user-info sidebar-text">
+            <span class="user-name">{{ user.first_name }} {{ user.last_name }}</span>
+            <span class="user-role">Admin</span>
+          </div>
+          <i class="fa-solid fa-chevron-down sidebar-text" style="font-size: 12px; color: var(--text-muted); margin-left: auto;"></i>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Area -->
+    <div class="main-area">
+
+      <!-- Content -->
+      <main class="content-wrapper">
+        {% block content %}{% endblock %}
+      </main>
+      
+    </div>
+  </div>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

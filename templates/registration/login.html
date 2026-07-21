@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PackMate — Login</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'packing/style.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .login-container {
+      width: 100%;
+      max-width: 400px;
+    }
+    .login-logo {
+      text-align: center;
+      margin-bottom: 32px;
+      font-size: 24px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    .login-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .login-card h2 {
+      margin-top: 0;
+      margin-bottom: 24px;
+      font-size: 20px;
+      text-align: center;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .form-group input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+      transition: border-color var(--t);
+      box-sizing: border-box;
+    }
+    .form-group input:focus {
+      border-color: var(--accent);
+    }
+    .btn-login {
+      width: 100%;
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity var(--t);
+    }
+    .btn-login:hover {
+      opacity: 0.9;
+    }
+    .error-msg {
+      color: var(--danger);
+      font-size: 13px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <div class="login-logo">
+      <i class="fa-solid fa-cube" style="color: var(--accent);"></i>
+      PackMate
+    </div>
+    
+    <div class="login-card">
+      <h2>Welcome Back</h2>
+      
+      {% if form.errors %}
+      <div class="error-msg">Invalid username or password. Please try again.</div>
+      {% endif %}
+
+      <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="id_username">Username</label>
+          <input type="text" name="username" autofocus autocapitalize="none" autocomplete="username" maxlength="150" required id="id_username">
+        </div>
+        <div class="form-group">
+          <label for="id_password">Password</label>
+          <input type="password" name="password" autocomplete="current-password" required id="id_password">
+        </div>
+        <button type="submit" class="btn-login">Log In</button>
+        <input type="hidden" name="next" value="{{ next }}">
+        
+        <div style="text-align: center; margin-top: 24px; font-size: 13px; color: var(--text-muted);">
+          Don't have an account? <a href="{% url 'signup' %}" style="color: var(--accent); text-decoration: none; font-weight: 500;">Sign up</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>

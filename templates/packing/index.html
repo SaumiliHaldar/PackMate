@@ -1,0 +1,238 @@
+{% extends "packing/base.html" %}
+{% block title %}PackMate — Dashboard{% endblock %}
+
+{% block content %}
+
+<!-- ── Stats Row ────────────────────────────────────────────── -->
+<div class="stats-grid">
+  <!-- Card 1 -->
+  <div class="card stat-card">
+    <div class="stat-icon" style="background: #2563EB; color: #FFF;"><i class="fa-solid fa-cube"></i></div>
+    <div class="stat-info">
+      <span class="stat-label">Total Products</span>
+      <span class="stat-value" id="badge-products">—</span>
+      <!-- <span class="stat-trend"><span class="trend-up">+4 this month</span> <i class="fa-solid fa-arrow-up trend-icon"></i></span> -->
+    </div>
+  </div>
+  <!-- Card 2 -->
+  <div class="card stat-card">
+    <div class="stat-icon" style="background: #16A34A; color: #FFF;"><i class="fa-solid fa-boxes-stacked"></i></div>
+    <div class="stat-info">
+      <span class="stat-label">Total Boxes</span>
+      <span class="stat-value" id="badge-boxes">—</span>
+      <!-- <span class="stat-trend"><span class="trend-up">+2 this month</span> <i class="fa-solid fa-arrow-up trend-icon"></i></span> -->
+    </div>
+  </div>
+  <!-- Card 3 -->
+  <div class="card stat-card">
+    <div class="stat-icon" style="background: #9333EA; color: #FFF;"><i class="fa-solid fa-cart-shopping"></i></div>
+    <div class="stat-info">
+      <span class="stat-label">Orders Today</span>
+      <span class="stat-value" id="badge-orders">—</span>
+      <!-- <span class="stat-trend"><span class="trend-up">+3 from yesterday</span> <i class="fa-solid fa-arrow-up trend-icon"></i></span> -->
+    </div>
+  </div>
+  <!-- Card 4 -->
+  <div class="card stat-card">
+    <div class="stat-icon" style="background: #F97316; color: #FFF;"><i class="fa-solid fa-bolt"></i></div>
+    <div class="stat-info">
+      <span class="stat-label">Successful Recommendations</span>
+      <span class="stat-value">100%</span>
+      <!-- <span class="stat-trend"><span class="trend-neutral">All systems optimal</span></span> -->
+    </div>
+  </div>
+</div>
+
+<!-- ── Dashboard Main Grid ──────────────────────────────────── -->
+<div class="dashboard-grid">
+
+  <!-- ROW 1: Recent Products -->
+  <div class="card">
+    <div class="card-header">
+      <h2 class="card-title">Recent Products</h2>
+    </div>
+    <table class="data-table" style="flex: 1;">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Dimensions (cm)</th>
+          <th>Weight (kg)</th>
+          <th>Stock</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="products-list">
+        <!-- Populated by JS -->
+      </tbody>
+    </table>
+    <div class="card-footer">
+      <a href="/admin/packing/product/" target="_blank" class="view-all-link">View all products <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </div>
+
+  <!-- ROW 1: Recommended Box -->
+  <div class="card" id="section-result">
+    <div class="card-header" style="border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 24px;">
+      <h2 class="card-title">Recommended Box</h2>
+      <span class="status-badge" id="box-match-badge" style="display: none;"><i class="fa-solid fa-check"></i> Best Match</span>
+    </div>
+    
+    <div id="result-content" style="min-height: 215px; display: flex; flex-direction: column; justify-content: center; flex: 1;">
+      <div style="text-align: center; color: var(--text-muted);">
+        <i class="fa-solid fa-box-open" style="font-size: 32px; opacity: 0.3; margin-bottom: 12px;"></i>
+        <p>No order selected.</p>
+        <p style="font-size: 12px;">Build an order below to see recommendations.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 2: Recent Orders -->
+  <div class="card">
+    <div class="card-header">
+      <h2 class="card-title">Recent Orders</h2>
+    </div>
+    <table class="data-table" style="flex: 1;">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Date</th>
+          <th>Products</th>
+          <th>Total Weight</th>
+          <th>Recommended Box</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="orders-list">
+        <!-- Populated by JS -->
+      </tbody>
+    </table>
+    <div class="card-footer">
+      <a href="/admin/packing/order/" target="_blank" class="view-all-link">View all orders <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </div>
+
+  <!-- ROW 2: Quick Actions -->
+  <div class="card">
+    <div class="card-header">
+      <h2 class="card-title">Quick Actions</h2>
+    </div>
+    <div class="action-list" style="flex: 1; display: flex; flex-direction: column; justify-content: flex-start;">
+      <!-- Add Product -->
+      <button class="action-btn" id="btn-toggle-add-product">
+        <i class="fa-solid fa-plus"></i> Add Product
+      </button>
+      
+      <!-- Add Box -->
+      <button class="action-btn" id="btn-toggle-add-box">
+        <i class="fa-solid fa-plus"></i> Add Box
+      </button>
+
+      <!-- Create Order -->
+      <button class="action-btn" id="btn-toggle-create-order">
+        <i class="fa-solid fa-plus"></i> Create Order
+      </button>
+
+      <!-- Get Recommendation -->
+      <button class="action-btn" id="btn-get-recommendation" disabled style="color: var(--text); margin-top: auto;">
+        <i class="fa-solid fa-bolt" style="color: var(--accent);"></i> Get Recommendation
+      </button>
+      <p id="msg-order" class="form-msg"></p>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- ── Modals ────────────────────────────────────────────────── -->
+
+<!-- Add Product Modal -->
+<div class="modal-overlay" id="modal-add-product">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">Add Product</h2>
+      <button class="modal-close" onclick="closeModal('modal-add-product')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <form id="form-add-product" novalidate>
+      <div class="form-group"><label>Product Name</label><input id="p-name" type="text" required /></div>
+      <div class="form-row">
+        <div class="form-group"><label>L (cm)</label><input id="p-length" type="number" step="0.01" required /></div>
+        <div class="form-group"><label>W (cm)</label><input id="p-width" type="number" step="0.01" required /></div>
+        <div class="form-group"><label>H (cm)</label><input id="p-height" type="number" step="0.01" required /></div>
+      </div>
+      <div class="form-group"><label>Weight (kg)</label><input id="p-weight" type="number" step="0.01" required /></div>
+      <button type="submit" class="btn-primary" style="margin-top: 24px;">Save Product</button>
+      <p id="msg-add-product" class="form-msg"></p>
+    </form>
+  </div>
+</div>
+
+<!-- Add Box Modal -->
+<div class="modal-overlay" id="modal-add-box">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">Add Box</h2>
+      <button class="modal-close" onclick="closeModal('modal-add-box')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <form id="form-add-box" novalidate>
+      <div class="form-group"><label>Box Name</label><input id="b-name" type="text" required /></div>
+      <div class="form-row">
+        <div class="form-group"><label>L (cm)</label><input id="b-length" type="number" step="0.01" required /></div>
+        <div class="form-group"><label>W (cm)</label><input id="b-width" type="number" step="0.01" required /></div>
+        <div class="form-group"><label>H (cm)</label><input id="b-height" type="number" step="0.01" required /></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Max Wt (kg)</label><input id="b-weight" type="number" step="0.01" required /></div>
+        <div class="form-group"><label>Cost</label><input id="b-cost" type="number" step="0.01" required /></div>
+      </div>
+      <button type="submit" class="btn-primary" style="margin-top: 24px;">Save Box</button>
+      <p id="msg-add-box" class="form-msg"></p>
+    </form>
+  </div>
+</div>
+
+<!-- Create Order Modal -->
+<div class="modal-overlay" id="modal-create-order">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">Create Order</h2>
+      <button class="modal-close" onclick="closeModal('modal-create-order')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">Select products to add to current order:</p>
+    
+    <div id="quick-product-select" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; max-height: 200px; overflow-y: auto; padding-right: 4px;">
+      <!-- Populated by JS -->
+    </div>
+    
+    <div style="background: var(--surface-hover); border-radius: var(--radius-sm); padding: 16px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <p style="font-size: 13px; font-weight: 600;">Current Items (<span id="order-count">0</span>)</p>
+        <button id="btn-clear-order" style="background: transparent; border: none; color: var(--danger); font-size: 12px; cursor: pointer;">
+          <i class="fa-solid fa-trash-can"></i> Clear
+        </button>
+      </div>
+      <div id="order-items-list" class="order-items-list" style="min-height: auto; margin-bottom: 0;"></div>
+    </div>
+
+    <button class="btn-primary" style="margin-top: 24px;" onclick="closeModal('modal-create-order')">Done</button>
+  </div>
+</div>
+
+<!-- Hidden SVG Template for Box Illustration -->
+<template id="box-svg-template">
+  <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Back faces -->
+    <path d="M100 65 L160 95 L160 145 L100 115 Z" fill="#B08D6A" />
+    <path d="M40 95 L100 65 L100 115 L40 145 Z" fill="#9C7A58" />
+    <!-- Front faces -->
+    <path d="M40 95 L100 125 L160 95 L100 65 Z" fill="#D2A679" />
+    <path d="M40 95 L100 125 L100 175 L40 145 Z" fill="#C29666" />
+    <path d="M100 125 L160 95 L160 145 L100 175 Z" fill="#B38B5D" />
+  </svg>
+</template>
+
+{% endblock %}
+
+{% block scripts %}
+{% load static %}
+<script src="{% static 'packing/app.js' %}"></script>
+{% endblock %}
